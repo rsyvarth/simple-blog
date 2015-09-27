@@ -15,7 +15,7 @@ def login_required(func):
     @wraps(func)
     def decorated_view(*args, **kwargs):
         if not users.get_current_user():
-            return redirect(users.create_login_url(request.url))
+            abort(401)  # Unauthorized
         return func(*args, **kwargs)
     return decorated_view
 

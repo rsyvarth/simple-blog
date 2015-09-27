@@ -1,0 +1,27 @@
+<div class="demo-nav mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
+  <div class="mdl-layout-spacer"></div>
+  <label class="mdl-switch md-cell mdl-cell--2-col mdl-js-switch mdl-js-ripple-effect">
+    <input type="checkbox" class="mdl-switch__input" ng-model="showRead" ng-click="toggleFilter()" />
+    <span class="mdl-switch__label" translate>HOME.SHOW_READ</span>
+  </label>
+</div>
+
+<story-list></story-list> 
+
+<nav class="demo-nav mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
+    <a ui-sref="home({page: {{currPage-1}} })" class="demo-nav__button" ng-if="currPage > 1">
+      <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+        <i class="material-icons">arrow_back</i>
+      </button>
+      <span translate>HOME.BACK</span>
+    </a>
+
+    <div class="section-spacer"></div>
+
+    <a ui-sref="home({page: {{currPage+1}} })" class="demo-nav__button">
+      <span translate>HOME.FORWARD</span>
+      <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+        <i class="material-icons">arrow_forward</i>
+      </button>
+    </a>
+</nav>

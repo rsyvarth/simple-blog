@@ -1,0 +1,247 @@
+
+/**
+ * TODO: Cleanup css, a bunch of the current stuff isn't used / should be 
+ * refactored to use sass variables and best practices 
+ */
+
+@import 'background/background';
+@import 'about/about';
+@import 'storyList/storyList';
+
+body {
+  background-color: #424242;
+  font-family: 'Roboto', 'Helvetica', sans-serif;
+}
+
+.mdl-switch {
+  margin-right: 5px;
+}
+
+.mdl-button--accent.mdl-button--accent.mdl-button--raised, .mdl-button--accent.mdl-button--accent.mdl-button--fab {
+  background-color: rgb(96,125,139);
+}
+
+.demo-blog .demo-blog__posts {
+  max-width: 900px;
+  padding: 0;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Everything below here is just copy and pasted from an MDL template */
+
+.demo-blog.mdl-layout .mdl-layout__content {
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+}
+.demo-blog .mdl-card {
+  min-height: 320px;
+}
+.demo-blog .mdl-card__title {
+  padding: 16px;
+}
+.demo-blog .mdl-card__media {
+  box-sizing: border-box;
+  background-size: cover;
+  padding: 24px;
+  position: relative;
+  min-height: 250px;
+  background-color: rgb(96,125,139);
+  cursor: pointer;
+}
+.demo-blog .mdl-card__supporting-text {
+  width: 100%;
+  padding: 16px;
+  min-height: 64px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.demo-blog .mdl-card__supporting-text strong {
+  font-weight: 400;
+}
+.demo-blog .mdl-card__media ~ .mdl-card__supporting-text {
+  min-height: 64px;
+}
+.demo-blog .mdl-card__supporting-text:not(:last-child) {
+  box-sizing: border-box;
+  min-height: 76px;
+}
+.demo-blog:not(.demo-blog--blogpost) .mdl-card__supporting-text ~ .mdl-card__supporting-text {
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+.demo-blog .meta {
+  box-sizing: border-box;
+  padding: 16px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+  -webkit-justify-content: flex-start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  height: auto;
+}
+.demo-blog .mdl-card .meta.meta--fill {
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+.demo-blog .meta > *:first-child {
+  margin-right: 16px;
+}
+.demo-blog .meta > * {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+.demo-blog .demo-blog__posts > .demo-nav {
+  margin: 12px 15px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  color: white;
+  font-weight: 500;
+}
+.demo-blog .demo-blog__posts > .demo-nav > .demo-nav__button {
+  color: white;
+  text-decoration: none;
+}
+.demo-blog .demo-blog__posts > .demo-nav .mdl-button {
+  color: rgba(0,0,0,0.54);
+  background-color: white;
+}
+.demo-blog .demo-blog__posts > .demo-nav > .demo-nav__button:first-child .mdl-button {
+  margin-right: 16px;
+}
+.demo-blog .demo-blog__posts > .demo-nav > .demo-nav__button:last-child .mdl-button {
+  margin-left: 16px;
+}
+.demo-blog .mdl-card > a {
+  color: inherit;
+  text-decoration: none;
+  font-weight: inherit;
+}
+
+.demo-blog .mdl-card h3 a {
+  text-decoration: none;
+}
+.demo-blog .mdl-card h3.quote:before, .demo-blog .mdl-card h3.quote:after {
+  display: block;
+  font-size: 3em;
+  margin-top: 0.5em;
+}
+.demo-blog .mdl-card h3.quote:before {
+  content: '“';
+}
+.demo-blog .mdl-card h3.quote:after {
+  content: '”';
+}
+.demo-blog--blogpost .custom-header {
+  background-color: transparent;
+}
+.demo-blog--blogpost .demo-blog__posts > .mdl-card .mdl-card__media {
+  background-image: url('/images/road_big.jpg');
+  height: 280px;
+}
+.demo-blog--blogpost .comments {
+  background-color: #EEE;
+}
+.demo-blog--blogpost .meta > * {
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.demo-blog--blogpost .meta + .mdl-card__supporting-text {
+  border: 0;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+.demo-blog--blogpost .meta + .mdl-card__supporting-text p {
+  max-width: 512px;
+  margin: 16px auto;
+  font-size: 16px;
+  line-height: 28px;
+}
+
+.demo-blog--blogpost .demo-back {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  color: white;
+  z-index: 9999;
+}
+.demo-blog .section-spacer {
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+}
+.demo-blog .amazing .mdl-card__title {
+  background-color: #263238;
+}
+.demo-blog .minilogo {
+  width: 44px;
+  height: 44px;
+  border-radius: 22px;
+  background-color: #F5F5F5;
+}
+
+/* Fixes for IE 10 */
+.mdl-grid {
+  display: -webkit-box !important;
+  display: -webkit-flex !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+}
+
+.mdl-mini-footer {
+  margin-top: 80px;
+  height: 120px;
+  padding: 40px;
+  box-sizing: border-box;
+}

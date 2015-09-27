@@ -58,3 +58,11 @@ target/
 
 # Keep secret keys out of version control
 secret_keys.py
+
+
+# General
+node_modules
+bower_components
+
+# App Specific
+dist

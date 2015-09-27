@@ -18,6 +18,9 @@ app.add_url_rule('/api/_ah/warmup', 'warmup', view_func=views.warmup)
 # Home page
 app.add_url_rule('/api/', 'home', view_func=views.home)
 
+# Home page
+app.add_url_rule('/login', 'login', view_func=views.login)
+
 # Say hello
 app.add_url_rule('/api/hello/<username>', 'say_hello', view_func=views.say_hello)
 

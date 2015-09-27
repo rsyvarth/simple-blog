@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html data-ng-app="app">
+  <head>
+    <meta charset="UTF-8">
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <base href="/">
+
+    <title>Hacker Reader</title>
+
+    <link href="css/vendor.css" rel="stylesheet" type="text/css" />
+    <link href="css/main.css" rel="stylesheet" type="text/css" />
+
+    <script src="vendor.js"></script>
+    <script src="app.js"></script>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+  </head>
+  <body ng-cloak>
+    <background></background>
+    <div class="demo-blog mdl-layout mdl-js-layout has-drawer is-upgraded">
+        <header class="mdl-layout__header mdl-layout__header--transparent mdl-layout__header--scroll">
+          <div class="mdl-layout__header-row">
+            <!-- Title -->
+            <span class="mdl-layout-title" translate>NAV.TITLE</span>
+            <!-- Add spacer, to align navigation to the right -->
+            <div class="mdl-layout-spacer"></div>
+            <!-- Navigation -->
+            <nav class="mdl-navigation">
+              <a class="mdl-navigation__link" ui-sref="home" translate>NAV.HOME</a>
+              <a class="mdl-navigation__link" ui-sref="about" translate>NAV.ABOUT</a>
+            </nav>
+          </div>
+        </header>
+        <div class="mdl-layout__drawer">
+          <span class="mdl-layout-title" translate>NAV.TITLE</span>
+          <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" ui-sref="home" translate>NAV.HOME</a>
+            <a class="mdl-navigation__link" ui-sref="about" translate>NAV.ABOUT</a>
+          </nav>
+        </div>
+
+      <main class="mdl-layout__content">
+        <div class="demo-blog__posts mdl-grid" ui-view>
+        </div>
+
+        <footer class="mdl-mini-footer">
+          <div class="mdl-mini-footer__left-section">
+            <div class="mdl-logo" translate>FOOT.TITLE</div>
+            <ul class="mdl-mini-footer__link-list">
+              <li><a href="https://github.com/rsyvarth/hacker-reader" translate>FOOT.GITHUB</a></li>
+              <li translate>FOOT.BY</li>
+            </ul>
+          </div>
+          <div class="mdl-mini-footer__right-section">
+            <ul class="mdl-mini-footer__link-list">
+              <li></li>
+              <li><a href="https://www.desktoppr.co/" translate>FOOT.DESKTOPPR</a></li>
+              <li><a href="https://github.com/HackerNews/API" translate>FOOT.HACKER_NEWS</a></li>
+              <li><a href="http://embed.ly/" translate>FOOT.EMBEDLY</a></li>
+            </ul>
+          </div>
+        </footer>
+      </main>
+      <div class="mdl-layout__obfuscator"></div>
+    </div>
+  </body>
+</html>

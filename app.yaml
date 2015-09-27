@@ -21,6 +21,10 @@ libraries:
 inbound_services:
 - warmup
 
+skip_files:
+- ^/static/bower_components/(.*)$
+- ^/static/node_modules/(.*)$
+
 handlers:
 - url: /favicon.ico
   static_files: application/static/img/favicon.ico
@@ -39,9 +43,26 @@ handlers:
 - url: /api/.*
   script: run.application.app
 
-- url: /static/.*
-  static_dir: application/static
+- url: /login
+  script: run.application.app
+
+- url: /vendor.js
+  static_files: application/static/dist/vendor.js
+  upload: application/static/dist/vendor.js
+
+- url: /app.js
+  static_files: application/static/dist/app.js
+  upload: application/static/dist/app.js
+
+- url: /css
+  static_dir: application/static/dist/css
+
+- url: /partials
+  static_dir: application/static/dist/partials
+
+- url: /images
+  static_dir: application/static/dist/images
 
 - url: .*
-  static_files: application/static/index.html
-  upload: application/static/index.html
+  static_files: application/static/dist/index.html
+  upload: application/static/dist/index.html
