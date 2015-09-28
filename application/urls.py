@@ -4,6 +4,7 @@ urls.py
 URL dispatch route mappings and error handlers
 
 """
+
 from flask import render_template
 
 from google.appengine.api import users
@@ -55,7 +56,8 @@ def formatExample(example):
         'added_by': {
             'email': example.added_by.email(),
             'user_id': example.added_by.user_id()
-        }
+        },
+        'timestamp': example.timestamp.isoformat()
     }
 
 
