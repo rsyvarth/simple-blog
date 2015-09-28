@@ -28,7 +28,7 @@ var HackerNewsService = Class.extend({
 
     this.$http({
       method: 'GET',
-      url: this.baseUrl + '/test'
+      url: this.baseUrl + '/todos'
     }).then(function(data) {
       deferred.resolve(data.data);
     }, function(err) {

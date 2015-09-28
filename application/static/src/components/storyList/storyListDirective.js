@@ -57,6 +57,7 @@ var StoryListDirective = BaseDirective.extend({
     this.$scope.loading = false;
 
     this.$scope.stories = this.storyModel.getStories();
+    console.log(this.$scope.stories);
   },
 
   /**
