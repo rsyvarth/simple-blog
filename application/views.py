@@ -34,6 +34,9 @@ def login():
         return redirect(users.create_login_url(request.url))
     return redirect("");
 
+def test():
+    return '{}';
+
 
 def say_hello(username):
     """Contrived example to demonstrate Flask's url routing capabilities"""

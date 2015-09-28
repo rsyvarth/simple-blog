@@ -5,15 +5,9 @@ var app = angular.module('app', [
 
   'storage.persistentStorageService',
 
-  'background',
-  'imageGen.imageGenModel',
-  'imageGen.imageGenService',
-
   'storyList',
   'story.StoryModel',
-  'story.ReadMarkerModel',
   'hackerNews.hackerNewsService',
-  'embed.embedService',
 
   'ui.router',
   'pascalprecht.translate',

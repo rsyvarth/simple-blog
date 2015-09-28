@@ -15,11 +15,22 @@ from application import views
 # See http://code.google.com/appengine/docs/python/config/appconfig.html#Warming_Requests
 app.add_url_rule('/api/_ah/warmup', 'warmup', view_func=views.warmup)
 
+# Login page
+app.add_url_rule('/login', 'login', view_func=views.login)
+
 # Home page
 app.add_url_rule('/api/', 'home', view_func=views.home)
 
-# Home page
-app.add_url_rule('/login', 'login', view_func=views.login)
+# Test page
+app.add_url_rule('/api/test', 'test', view_func=views.test)
+
+
+
+
+
+
+
+
 
 # Say hello
 app.add_url_rule('/api/hello/<username>', 'say_hello', view_func=views.say_hello)

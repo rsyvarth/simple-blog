@@ -2,8 +2,8 @@
 Initialize Flask app
 
 """
-from flask import Flask
 import os
+from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
 from werkzeug.debug import DebuggedApplication
 

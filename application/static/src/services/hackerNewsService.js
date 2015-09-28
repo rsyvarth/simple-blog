@@ -10,7 +10,7 @@
 var HackerNewsService = Class.extend({
   $q: null,
   $http: null,
-  baseUrl: 'https://hacker-news.firebaseio.com/v0',
+  baseUrl: 'api',
 
   /**
    * Init class
@@ -28,26 +28,7 @@ var HackerNewsService = Class.extend({
 
     this.$http({
       method: 'GET',
-      url: this.baseUrl + '/topstories.json'
-    }).then(function(data) {
-      deferred.resolve(data.data);
-    }, function(err) {
-      console.error(err); //TODO: real error handling
-      deferred.reject(err);
-    });
-
-    return deferred.promise;
-  },
-
-  /**
-   * Pull detains for a particular story by id
-   */
-  getStoryDetails: function(id) {
-    var deferred = this.$q.defer();
-
-    this.$http({
-      method: 'GET',
-      url: this.baseUrl + '/item/' + id + '.json'
+      url: this.baseUrl + '/test'
     }).then(function(data) {
       deferred.resolve(data.data);
     }, function(err) {

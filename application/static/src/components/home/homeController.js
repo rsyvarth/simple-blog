@@ -11,17 +11,15 @@ var HomeController = Class.extend({
   events: null,
   storyModel: null,
   $stateParams: null,
-  readMarkerModel: null,
 
   /**
    * Init class
    */
-  init: function($scope, Events, StoryModel, $stateParams, ReadMarkerModel) {
+  init: function($scope, Events, StoryModel, $stateParams) {
     this.$scope = $scope;
     this.events = Events;
     this.storyModel = StoryModel;
     this.$stateParams = $stateParams;
-    this.readMarkerModel = ReadMarkerModel;
 
     this.setupScope();
   },
@@ -35,7 +33,6 @@ var HomeController = Class.extend({
   setupScope: function() {
     // Cast the page number to an integer (params are strings by default)
     this.$scope.currPage = Number(this.$stateParams.page);
-    this.$scope.showRead = this.readMarkerModel.getReadFilterDisabled();
 
     this.$scope.toggleFilter = this.toggleFilter.bind(this);
 
@@ -47,10 +44,9 @@ var HomeController = Class.extend({
    * (which will now be appropriately filtered)
    */
   toggleFilter: function() {
-    this.readMarkerModel.setFilter(this.$scope.showRead);
     this.storyModel.loadStories(this.$scope.currPage);
   }
 
 });
 
-HomeController.$inject = ['$scope', 'Events', 'StoryModel', '$stateParams', 'ReadMarkerModel'];
+HomeController.$inject = ['$scope', 'Events', 'StoryModel', '$stateParams'];
