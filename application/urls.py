@@ -27,7 +27,6 @@ app.add_url_rule('/api/', 'home', view_func=views.home)
 app.add_url_rule('/api/test', 'test', view_func=views.test)
 
 
-
 TODOS = {
     'todo1': {'id': 1, 'title': 'build an API'},
     'todo2': {'id': 2, 'title': '?????'},
@@ -66,14 +65,25 @@ class Todo(Resource):
 # shows a list of all todos, and lets you POST to add new tasks
 class TodoList(Resource):
     def get(self):
-        return TODOS
+        examples = ExampleModel.query()
+        return examples
 
     def post(self):
         args = parser.parse_args()
+        example = ExampleModel(
+            example_name=args['title']
+            example_description=args['description']
+            added_by=users.get_current_user()
+        )
+        try:
+            example.put()
+            example_id = example.key.id()
+            return example, 201
+        except CapabilityDisabledError:
+            return {'status' : 500, 'message' : 'can\'t access database'}, 500
+
         todo_id = int(max(TODOS.keys()).lstrip('todo')) + 1
         todo_id = 'todo%i' % todo_id
-        TODOS[todo_id] = {'task': args['task']}
-        return TODOS[todo_id], 201
 
 ##
 ## Actually setup the Api resource routing here
