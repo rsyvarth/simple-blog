@@ -6,8 +6,13 @@ URL dispatch route mappings and error handlers
 """
 from flask import render_template
 
+from google.appengine.api import users
+from google.appengine.runtime.apiproxy_errors import CapabilityDisabledError
+
 from application import app
 from application import views
+
+from models import ExampleModel
 
 from flask_restful import reqparse, abort, Api, Resource
 api = Api(app)
@@ -27,6 +32,28 @@ app.add_url_rule('/api/', 'home', view_func=views.home)
 app.add_url_rule('/api/test', 'test', view_func=views.test)
 
 
+def to_dict(model):
+    output = {}
+
+    for key, prop in model.properties().iteritems():
+        value = getattr(model, key)
+
+        if value is None or isinstance(value, SIMPLE_TYPES):
+            output[key] = value
+        elif isinstance(value, datetime.date):
+            # Convert date/datetime to MILLISECONDS-since-epoch (JS "new Date()").
+            ms = time.mktime(value.utctimetuple()) * 1000
+            ms += getattr(value, 'microseconds', 0) / 1000
+            output[key] = int(ms)
+        elif isinstance(value, db.GeoPt):
+            output[key] = {'lat': value.lat, 'lon': value.lon}
+        elif isinstance(value, db.Model):
+            output[key] = to_dict(value)
+        else:
+            raise ValueError('cannot encode ' + repr(prop))
+
+    return output
+
 TODOS = {
     'todo1': {'id': 1, 'title': 'build an API'},
     'todo2': {'id': 2, 'title': '?????'},
@@ -39,7 +66,8 @@ def abort_if_todo_doesnt_exist(todo_id):
         abort(404, message="Todo {} doesn't exist".format(todo_id))
 
 parser = reqparse.RequestParser()
-parser.add_argument('task')
+parser.add_argument('title')
+parser.add_argument('description')
 
 
 # Todo
@@ -66,19 +94,24 @@ class Todo(Resource):
 class TodoList(Resource):
     def get(self):
         examples = ExampleModel.query()
-        return examples
+        return to_dict(examples);
+        # out = []
+        # for example in examples:
+        #     out.append(example.to_dict())
+        # return out
+        # return examples.to_dict()
 
     def post(self):
         args = parser.parse_args()
         example = ExampleModel(
-            example_name=args['title']
-            example_description=args['description']
+            example_name=args['title'],
+            example_description=args['description'],
             added_by=users.get_current_user()
         )
         try:
             example.put()
             example_id = example.key.id()
-            return example, 201
+            return to_dict(example), 201
         except CapabilityDisabledError:
             return {'status' : 500, 'message' : 'can\'t access database'}, 500
 
