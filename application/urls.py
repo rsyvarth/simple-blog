@@ -32,28 +32,6 @@ app.add_url_rule('/api/', 'home', view_func=views.home)
 app.add_url_rule('/api/test', 'test', view_func=views.test)
 
 
-def to_dict(model):
-    output = {}
-
-    for key, prop in model.properties().iteritems():
-        value = getattr(model, key)
-
-        if value is None or isinstance(value, SIMPLE_TYPES):
-            output[key] = value
-        elif isinstance(value, datetime.date):
-            # Convert date/datetime to MILLISECONDS-since-epoch (JS "new Date()").
-            ms = time.mktime(value.utctimetuple()) * 1000
-            ms += getattr(value, 'microseconds', 0) / 1000
-            output[key] = int(ms)
-        elif isinstance(value, db.GeoPt):
-            output[key] = {'lat': value.lat, 'lon': value.lon}
-        elif isinstance(value, db.Model):
-            output[key] = to_dict(value)
-        else:
-            raise ValueError('cannot encode ' + repr(prop))
-
-    return output
-
 TODOS = {
     'todo1': {'id': 1, 'title': 'build an API'},
     'todo2': {'id': 2, 'title': '?????'},
@@ -68,6 +46,17 @@ def abort_if_todo_doesnt_exist(todo_id):
 parser = reqparse.RequestParser()
 parser.add_argument('title')
 parser.add_argument('description')
+
+def formatExample(example):
+    return {
+        'id': example.key.id(),
+        'title': example.example_name,
+        'description': example.example_description,
+        'added_by': {
+            'email': example.added_by.email(),
+            'user_id': example.added_by.user_id()
+        }
+    }
 
 
 # Todo
@@ -94,11 +83,10 @@ class Todo(Resource):
 class TodoList(Resource):
     def get(self):
         examples = ExampleModel.query()
-        return to_dict(examples);
-        # out = []
-        # for example in examples:
-        #     out.append(example.to_dict())
-        # return out
+        out = []
+        for example in examples:
+            out.append(formatExample(example))
+        return out
         # return examples.to_dict()
 
     def post(self):
@@ -110,13 +98,10 @@ class TodoList(Resource):
         )
         try:
             example.put()
-            example_id = example.key.id()
-            return to_dict(example), 201
+            # example_id = example.key.id()
+            return formatExample(example), 201
         except CapabilityDisabledError:
             return {'status' : 500, 'message' : 'can\'t access database'}, 500
-
-        todo_id = int(max(TODOS.keys()).lstrip('todo')) + 1
-        todo_id = 'todo%i' % todo_id
 
 ##
 ## Actually setup the Api resource routing here
