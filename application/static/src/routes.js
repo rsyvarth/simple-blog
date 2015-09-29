@@ -11,6 +11,10 @@ app.config(function($stateProvider, $urlRouterProvider) {
       url: '/about',
       templateUrl: 'partials/about/about.html'
     })
+    .state('create', {
+      url: '/create',
+      templateUrl: 'partials/create/create.html'
+    })
     .state('home', {
       url: '/:page',
       params: {

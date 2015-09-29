@@ -2,29 +2,23 @@
 
 var translations = {
   NAV: {
-    TITLE: 'Hacker Reader',
+    TITLE: 'Simple Blog',
     HOME: 'Home',
     ABOUT: 'About'
   },
   FOOT: {
-    TITLE: 'Hacker Reader',
+    TITLE: 'Simple Blog',
     GITHUB: 'Github',
-    BY: 'By Robert Syvarth',
-    DESKTOPPR: 'Desktoppr',
-    HACKER_NEWS: 'Hacker News',
-    EMBEDLY: 'Embedly'
+    BY: 'By Robert Syvarth & Jacob Walsh'
   },
   HOME: {
-    SHOW_READ: 'Show Read',
     BACK: 'Back',
-    FORWARD: 'Forward',
-    READ: 'Read',
-    UNREAD: 'Unread'
+    FORWARD: 'Forward'
   },
   ABOUT: {
     TITLE: 'About'
   },
-  BACKGROUND: {
-    CHANGE: 'Change Background'
+  CREATE: {
+    TITLE: 'Add Entry'
   }
 };

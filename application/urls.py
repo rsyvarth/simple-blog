@@ -79,15 +79,12 @@ class Entry(Resource):
             'id': entry.key.id(),
             'title': entry.title,
             'description': entry.description,
-            'added_by': {
-                # 'email': entry.added_by.email(),
-                'username': entry.added_by.nickname(),
-                'user_id': entry.added_by.user_id()
-            },
+            'added_by': UserSelf.format(entry.added_by),
             'timestamp': entry.timestamp.isoformat(),
             'updated': entry.updated.isoformat()
         }
 
+api.add_resource(Entry, '/api/entries/<entry_id>')
 
 # EntryList
 # shows a list of all entries, and lets you POST to add new entry
@@ -120,10 +117,6 @@ class EntryList(Resource):
             old_entries, prev_cursor, fewer = q_reverse.fetch_page(10, start_cursor=rev_cursor, offset=len(out))
             if prev_cursor is not None:
                 prevCurs = prev_cursor.urlsafe()
-        # else:
-        #     prevCurs = curs.urlsafe()
-
-
 
         return {
             'meta': {
@@ -158,6 +151,30 @@ class EntryList(Resource):
 ## Actually setup the Api resource routing here
 ##
 api.add_resource(EntryList, '/api/entries')
-api.add_resource(Entry, '/api/entries/<entry_id>')
 
+
+
+# UserSelf
+# gets information about the current user
+class UserSelf(Resource):
+    def get(self):
+           return self.format(users.get_current_user())
+
+
+    @staticmethod
+    def format(user):
+        if user is None:
+            return {}
+
+        return {
+            # 'email': user.email(),
+            'username': user.nickname(),
+            'user_id': user.user_id()
+        }
+
+
+##
+## Actually setup the Api resource routing here
+##
+api.add_resource(UserSelf, '/api/users/self')
 
