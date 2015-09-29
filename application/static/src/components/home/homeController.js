@@ -32,19 +32,17 @@ var HomeController = Class.extend({
    */
   setupScope: function() {
     // Cast the page number to an integer (params are strings by default)
-    this.$scope.currPage = Number(this.$stateParams.page);
-
-    this.$scope.toggleFilter = this.toggleFilter.bind(this);
+    this.$scope.currPage = this.$stateParams.page;
 
     this.storyModel.loadStories(this.$scope.currPage);
+
+    this.storiesLoaded = this.storiesLoaded.bind(this);
+    this.events.addEventListener(models.events.ENTRIES_LOADED, this.storiesLoaded);
   },
 
-  /**
-   * Toggle the read story filter then load a new set of stories
-   * (which will now be appropriately filtered)
-   */
-  toggleFilter: function() {
-    this.storyModel.loadStories(this.$scope.currPage);
+  storiesLoaded: function() {
+    var data = this.storyModel.getStories();
+    this.$scope.meta = data.meta;
   }
 
 });

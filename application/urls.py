@@ -99,7 +99,12 @@ class EntryList(Resource):
         args = parser.parse_args()
         curs = Cursor(urlsafe=args['cursor'])
 
-        entries, next_curs, more = EntryModel.query().order(-EntryModel.timestamp).fetch_page(1, start_cursor=curs)
+        q = EntryModel.query()
+        q_forward = q.order(-EntryModel.timestamp)
+        q_reverse = q.order(EntryModel.timestamp)
+
+        entries, next_curs, more = q_forward.fetch_page(10, start_cursor=curs)
+
 
         out = []
         for entry in entries:
@@ -109,8 +114,20 @@ class EntryList(Resource):
         if more:
             nextCurs = next_curs.urlsafe()
 
+        prevCurs = ""
+        if next_curs is not None:
+            rev_cursor = next_curs.reversed()
+            old_entries, prev_cursor, fewer = q_reverse.fetch_page(10, start_cursor=rev_cursor, offset=len(out))
+            if prev_cursor is not None:
+                prevCurs = prev_cursor.urlsafe()
+        # else:
+        #     prevCurs = curs.urlsafe()
+
+
+
         return {
             'meta': {
+                'prev_curs': prevCurs,
                 'curs': curs.urlsafe(), 
                 'next_curs': nextCurs
             },

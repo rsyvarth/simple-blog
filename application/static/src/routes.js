@@ -14,7 +14,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
     .state('home', {
       url: '/:page',
       params: {
-        page: {value: '1', squash: true}
+        page: {value: '', squash: true}
       },
       templateUrl: 'partials/home/home.html',
       controller: HomeController

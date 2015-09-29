@@ -15,29 +15,27 @@ var StoryModel = Class.extend({
   stories: [],
   events: null,
   $q: null,
-  hackerNewsService: null,
+  storyService: null,
 
   /**
    * Init class
    */
-  init: function(Events, $q, HackerNewsService) {
+  init: function(Events, $q, StoryService) {
     this.events = Events;
     this.$q = $q;
-    this.hackerNewsService = HackerNewsService;
+    this.storyService = StoryService;
   },
 
   /**
    * Load the top stories filtered by read state
    */
-  loadStories: function(page) {
+  loadStories: function(cursor) {
     var deferred = this.$q.defer();
-    var limit = 20;
-    page = page > 1 ? page : 1;
 
-    this.hackerNewsService.getTopStoryIds().then(function(data) {
+    this.storyService.getStories(cursor).then(function(data) {
       var i = 0;
-      for(; i < data.length; i++) {
-        data[i].timestamp = moment.utc(data[i].timestamp).unix();
+      for(; i < data.entries.length; i++) {
+        data.entries[i].timestamp = moment.utc(data.entries[i].timestamp).unix();
       }
       this.stories = data;
 
@@ -68,8 +66,8 @@ var StoryModel = Class.extend({
 
 (function() {
   var StoryModelProvider = Class.extend({
-    $get: function(Events, $q, HackerNewsService) {
-      return new StoryModel(Events, $q, HackerNewsService);
+    $get: function(Events, $q, StoryService) {
+      return new StoryModel(Events, $q, StoryService);
     }
   });
 

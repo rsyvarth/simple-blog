@@ -35,10 +35,9 @@ var StoryListDirective = BaseDirective.extend({
    */
   setupScope: function() {
     this.$scope.stories = [];
+    this.$scope.meta = {};
     this.$scope.loading = true;
 
-    this.$scope.toggleRead = this.toggleRead.bind(this);
-    this.$scope.setRead = this.setRead.bind(this);
   },
 
   /**
@@ -56,26 +55,9 @@ var StoryListDirective = BaseDirective.extend({
   storiesLoaded: function() {
     this.$scope.loading = false;
 
-    this.$scope.stories = this.storyModel.getStories();
-    console.log(this.$scope.stories);
-  },
-
-  /**
-   * Toggle read state on the story (called when you toggle
-   * the state with the checkbox on the right)
-   */
-  toggleRead: function($event, story) {
-    this.storyModel.setRead(story, !story.read);
-
-    $event.preventDefault();
-    $event.stopPropagation();
-  },
-
-  /**
-   * Set the story to read (called when you click a link)
-   */
-  setRead: function(story) {
-    this.storyModel.setRead(story, true);
+    var data = this.storyModel.getStories();
+    this.$scope.stories = data.entries;
+    this.$scope.meta = data.meta;
   }
 
 });

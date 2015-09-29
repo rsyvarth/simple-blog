@@ -1,13 +1,6 @@
 'use strict';
 
-/**
- * Hacker News Service
- *
- * Provides an interface for Hacker News' api
- * so that we can pull top stories and their
- * corresponding data
- */
-var HackerNewsService = Class.extend({
+var StoryService = Class.extend({
   $q: null,
   $http: null,
   baseUrl: 'api',
@@ -21,14 +14,17 @@ var HackerNewsService = Class.extend({
   },
 
   /**
-   * Pull a list of the top 500 most popular stories
+   * Pull a list of the latest stories
    */
-  getTopStoryIds: function() {
+  getStories: function(cursor) {
     var deferred = this.$q.defer();
 
     this.$http({
       method: 'GET',
-      url: this.baseUrl + '/todos'
+      url: this.baseUrl + '/entries',
+      params: {
+        cursor: cursor
+      }
     }).then(function(data) {
       deferred.resolve(data.data);
     }, function(err) {
@@ -42,12 +38,12 @@ var HackerNewsService = Class.extend({
 });
 
 (function() {
-  var hackerNewsServiceProvider = Class.extend({
+  var StoryServiceProvider = Class.extend({
     $get: function($q, $http) {
-      return new HackerNewsService($q, $http);
+      return new StoryService($q, $http);
     }
   });
 
-  angular.module('hackerNews.hackerNewsService',[])
-    .provider('HackerNewsService', hackerNewsServiceProvider);
+  angular.module('story.StoryService',[])
+    .provider('StoryService', StoryServiceProvider);
 }());
