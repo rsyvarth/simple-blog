@@ -35,6 +35,10 @@ var StoryModel = Class.extend({
     page = page > 1 ? page : 1;
 
     this.hackerNewsService.getTopStoryIds().then(function(data) {
+      var i = 0;
+      for(; i < data.length; i++) {
+        data[i].timestamp = moment.utc(data[i].timestamp).unix();
+      }
       this.stories = data;
 
       this.events.notify(models.events.ENTRIES_LOADED);

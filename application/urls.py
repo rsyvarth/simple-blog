@@ -5,6 +5,8 @@ URL dispatch route mappings and error handlers
 
 """
 
+from google.appengine.datastore.datastore_query import Cursor
+
 from flask import render_template
 
 from google.appengine.api import users
@@ -47,49 +49,67 @@ def abort_if_todo_doesnt_exist(todo_id):
 parser = reqparse.RequestParser()
 parser.add_argument('title')
 parser.add_argument('description')
+parser.add_argument('cursor')
 
 def formatExample(example):
+    if example is None or example.timestamp is None:
+        return {}
+
     return {
         'id': example.key.id(),
         'title': example.example_name,
         'description': example.example_description,
         'added_by': {
-            'email': example.added_by.email(),
+            # 'email': example.added_by.email(),
+            'username': example.added_by.nickname(),
             'user_id': example.added_by.user_id()
         },
-        'timestamp': example.timestamp.isoformat()
+        'timestamp': example.timestamp.isoformat(),
+        'updated': example.updated.isoformat()
     }
 
 
 # Todo
 # shows a single todo item and lets you delete a todo item
-class Todo(Resource):
-    def get(self, todo_id):
-        abort_if_todo_doesnt_exist(todo_id)
-        return TODOS[todo_id]
+# class Todo(Resource):
+#     def get(self, todo_id):
+#         abort_if_todo_doesnt_exist(todo_id)
+#         return TODOS[todo_id]
 
-    def delete(self, todo_id):
-        abort_if_todo_doesnt_exist(todo_id)
-        del TODOS[todo_id]
-        return '', 204
+#     def delete(self, todo_id):
+#         abort_if_todo_doesnt_exist(todo_id)
+#         del TODOS[todo_id]
+#         return '', 204
 
-    def put(self, todo_id):
-        args = parser.parse_args()
-        task = {'task': args['task']}
-        TODOS[todo_id] = task
-        return task, 201
+#     def put(self, todo_id):
+#         args = parser.parse_args()
+#         task = {'task': args['task']}
+#         TODOS[todo_id] = task
+#         return task, 201
 
 
 # TodoList
 # shows a list of all todos, and lets you POST to add new tasks
 class TodoList(Resource):
     def get(self):
-        examples = ExampleModel.query()
+        args = parser.parse_args()
+        curs = Cursor(urlsafe=args['cursor'])
+        examples, next_curs, more = ExampleModel.query().order(-ExampleModel.timestamp).fetch_page(1, start_cursor=curs)
+        # examples = ExampleModel.query().order(-ExampleModel.timestamp)
         out = []
         for example in examples:
             out.append(formatExample(example))
-        return out
-        # return examples.to_dict()
+
+        nextCurs = ""
+        if more:
+            nextCurs = next_curs.urlsafe()
+        return {
+            'meta': {
+                'curs': curs.urlsafe(), 
+                'next_curs': nextCurs
+            },
+            'entries': out
+        }
 
     def post(self):
         args = parser.parse_args()
@@ -109,7 +129,7 @@ class TodoList(Resource):
 ## Actually setup the Api resource routing here
 ##
 api.add_resource(TodoList, '/api/todos')
-api.add_resource(Todo, '/api/todos/<todo_id>')
+# api.add_resource(Todo, '/api/todos/<todo_id>')
 
 
 

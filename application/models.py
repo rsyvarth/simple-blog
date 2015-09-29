@@ -15,3 +15,4 @@ class ExampleModel(ndb.Model):
     example_description = ndb.TextProperty(required=True)
     added_by = ndb.UserProperty()
     timestamp = ndb.DateTimeProperty(auto_now_add=True)
+    updated = ndb.DateTimeProperty(auto_now=True)
