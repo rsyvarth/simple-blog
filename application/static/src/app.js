@@ -9,6 +9,10 @@ var app = angular.module('app', [
   'story.StoryModel',
   'story.StoryService',
 
+  'loginButton',
+  'user.UserModel',
+  'user.UserService',
+
   'ui.router',
   'pascalprecht.translate',
   'angularMoment'

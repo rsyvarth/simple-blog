@@ -8,6 +8,7 @@ URL dispatch route mappings and error handlers
 from google.appengine.datastore.datastore_query import Cursor
 
 from flask import render_template
+from flask.ext.cors import CORS
 
 from google.appengine.api import users
 from google.appengine.runtime.apiproxy_errors import CapabilityDisabledError
@@ -22,6 +23,7 @@ import logging
 
 from flask_restful import reqparse, abort, Api, Resource
 api = Api(app)
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:1234"}})
 
 ## URL dispatch rules
 # App Engine warm up handler
@@ -30,6 +32,7 @@ app.add_url_rule('/api/_ah/warmup', 'warmup', view_func=views.warmup)
 
 # Login page
 app.add_url_rule('/login', 'login', view_func=views.login)
+app.add_url_rule('/logout', 'logout', view_func=views.logout)
 
 
 # Entry

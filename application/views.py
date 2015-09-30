@@ -34,6 +34,11 @@ def login():
         return redirect(users.create_login_url(request.url))
     return redirect("");
 
+def logout():
+    if users.get_current_user():
+        return redirect(users.create_logout_url(request.url))
+    return redirect("");
+
 def test():
     return '{}';
 

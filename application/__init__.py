@@ -22,12 +22,12 @@ elif 'SERVER_SOFTWARE' in os.environ and os.environ['SERVER_SOFTWARE'].startswit
     # https://github.com/kamens/gae_mini_profiler
     app.wsgi_app = DebuggedApplication(app.wsgi_app, evalex=True)
 
-    from gae_mini_profiler import profiler, templatetags
+    # from gae_mini_profiler import profiler, templatetags
 
-    @app.context_processor
-    def inject_profiler():
-        return dict(profiler_includes=templatetags.profiler_includes())
-    app.wsgi_app = profiler.ProfilerWSGIMiddleware(app.wsgi_app)
+    # @app.context_processor
+    # def inject_profiler():
+    #     return dict(profiler_includes=templatetags.profiler_includes())
+    # app.wsgi_app = profiler.ProfilerWSGIMiddleware(app.wsgi_app)
 else:
     app.config.from_object('application.settings.Production')
 

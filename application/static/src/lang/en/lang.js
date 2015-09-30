@@ -4,7 +4,9 @@ var translations = {
   NAV: {
     TITLE: 'Simple Blog',
     HOME: 'Home',
-    ABOUT: 'About'
+    ABOUT: 'About',
+    LOGIN: 'Login',
+    LOGOUT: 'Logout'
   },
   FOOT: {
     TITLE: 'Simple Blog',

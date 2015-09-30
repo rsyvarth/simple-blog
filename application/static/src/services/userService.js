@@ -1,6 +1,6 @@
 'use strict';
 
-var StoryService = Class.extend({
+var UserService = Class.extend({
   $q: null,
   $http: null,
   baseUrl: config.baseUrl + 'api',
@@ -16,18 +16,12 @@ var StoryService = Class.extend({
   /**
    * Pull a list of the latest stories
    */
-  getStories: function(cursor) {
+  getSelf: function() {
     var deferred = this.$q.defer();
-
-    var params = {};
-    if(cursor) {
-      params.cursor = cursor;
-    }
 
     this.$http({
       method: 'GET',
-      url: this.baseUrl + '/entries',
-      params: params
+      url: this.baseUrl + '/users/self'
     }).then(function(data) {
       deferred.resolve(data.data);
     }, function(err) {
@@ -41,12 +35,12 @@ var StoryService = Class.extend({
 });
 
 (function() {
-  var StoryServiceProvider = Class.extend({
+  var UserServiceProvider = Class.extend({
     $get: function($q, $http) {
-      return new StoryService($q, $http);
+      return new UserService($q, $http);
     }
   });
 
-  angular.module('story.StoryService',[])
-    .provider('StoryService', StoryServiceProvider);
+  angular.module('user.UserService',[])
+    .provider('UserService', UserServiceProvider);
 }());
