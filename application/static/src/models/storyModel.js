@@ -4,6 +4,7 @@
  * Define the ENTRIES_LOADED event which this model emits
  */
 namespace('models.events').ENTRIES_LOADED = 'StoryModel.ENTRIES_LOADED';
+namespace('models.events').ENTRY_CREATED = 'StoryModel.ENTRY_CREATED';
 
 /**
  * Story Model
@@ -13,6 +14,7 @@ namespace('models.events').ENTRIES_LOADED = 'StoryModel.ENTRIES_LOADED';
  */
 var StoryModel = Class.extend({
   stories: [],
+  story: {},
   events: null,
   $q: null,
   storyService: null,
@@ -54,12 +56,18 @@ var StoryModel = Class.extend({
     return this.stories;
   },
 
-  /**
-   * Set a story as read/unread
-   */
-  setRead: function(story, val) {
-    story.read = val;
-    this.readMarkerModel.saveId(story.id, val);
+  add: function(data) {
+    var deferred = this.$q.defer();
+
+    this.storyService.add(data).then(function(data){
+
+      this.story = data;
+      this.events.notify(models.events.ENTRY_CREATED);
+      deferred.resolve(data);
+
+    }.bind(this));
+
+    return deferred.promise;
   }
 
 });

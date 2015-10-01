@@ -13,6 +13,8 @@ var app = angular.module('app', [
   'user.UserModel',
   'user.UserService',
 
+  'createForm',
+
   'ui.router',
   'pascalprecht.translate',
   'angularMoment'

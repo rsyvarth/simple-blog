@@ -5,6 +5,7 @@ var translations = {
     TITLE: 'Simple Blog',
     HOME: 'Home',
     ABOUT: 'About',
+    CREATE: 'Create',
     LOGIN: 'Login',
     LOGOUT: 'Logout'
   },

@@ -36,6 +36,23 @@ var StoryService = Class.extend({
     });
 
     return deferred.promise;
+  },
+
+  add: function(data) {
+    var deferred = this.$q.defer();
+
+    this.$http({
+      method: 'POST',
+      url: this.baseUrl + '/entries',
+      data: data
+    }).then(function(data) {
+      deferred.resolve(data.data);
+    }, function(err) {
+      console.error(err); //TODO: real error handling
+      deferred.reject(err);
+    });
+
+    return deferred.promise;
   }
 
 });
