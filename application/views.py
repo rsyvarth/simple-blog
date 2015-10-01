@@ -8,7 +8,7 @@ For example the *say_hello* handler, handling the URL route '/hello/<username>',
   must be passed *username* as the argument.
 
 """
-from google.appengine.api import users
+from google.appengine.api import users, mail
 from google.appengine.runtime.apiproxy_errors import CapabilityDisabledError
 
 from flask import request, render_template, flash, url_for, redirect, abort
@@ -46,6 +46,17 @@ def test():
 def say_hello(username):
     """Contrived example to demonstrate Flask's url routing capabilities"""
     return 'Hello %s' % username
+
+def digest():
+    sender_address = "Simple Blog <robert@syvarth.com>"
+    subject = "Simple Blog - Daily Digest"
+    body = """
+This is a digest email.
+
+%s
+""" % "Testing"
+    mail.send_mail(sender_address, "robert.syvarth@gmail.com", subject, body)
+    return ""
 
 
 # @login_required

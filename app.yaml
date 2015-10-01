@@ -49,6 +49,10 @@ handlers:
 - url: /logout
   script: run.application.app
 
+- url: /digest
+  script: run.application.app
+  login: admin
+
 - url: /vendor.js
   static_files: application/static/dist/vendor.js
   upload: application/static/dist/vendor.js

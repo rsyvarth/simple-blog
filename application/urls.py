@@ -34,6 +34,9 @@ app.add_url_rule('/api/_ah/warmup', 'warmup', view_func=views.warmup)
 app.add_url_rule('/login', 'login', view_func=views.login)
 app.add_url_rule('/logout', 'logout', view_func=views.logout)
 
+# Run daily email digest
+app.add_url_rule('/digest', 'digest', view_func=views.digest)
+
 
 # Entry
 # shows a single entry item and lets you delete a entry item
