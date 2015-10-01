@@ -59,21 +59,20 @@ def say_hello(username):
     return 'Hello %s' % username
 
 def digest():
-    sender_address = "Simple Blog <robert@syvarth.com>"
+    sender_address = "Simple Blog <robert.syvarth@gmail.com>"
     subject = "Simple Blog - Daily Digest"
 
     body = """
 This is a digest email.
-<ul>
 """
     entries = EntryModel.query(EntryModel.timestamp > (datetime.datetime.now() + datetime.timedelta(days=-1))).order(-EntryModel.timestamp)
     for entry in entries:
         body = body + """
-    <li><a href="%s">%s</a></li>
-""" % ("http://simpleblog-1082.appspot.com/post/" + str(entry.key.id()), entry.title)
+    %s
+     - %s
+""" % (entry.title, "http://simpleblog-1082.appspot.com/post/" + str(entry.key.id()))
 
     body = body + """
-</ul>
 
 That is all!
 """
