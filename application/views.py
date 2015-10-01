@@ -19,7 +19,8 @@ from application import app
 from decorators import login_required, admin_required
 # from forms import ExampleForm
 # from models import ExampleModel
-
+from models import EntryModel, EmailSubscriptionModel
+import datetime
 
 # Flask-Cache (configured to use App Engine Memcache API)
 cache = Cache(app)
@@ -32,7 +33,17 @@ def home():
 def login():
     if not users.get_current_user():
         return redirect(users.create_login_url(request.url))
-    return redirect("");
+
+    subscription = EmailSubscriptionModel(
+        user = users.get_current_user()
+    )
+
+    try:
+        subscription.put()
+        return redirect("");
+    except CapabilityDisabledError:
+        return {'status' : 500, 'message' : 'can\'t access database'}, 500
+        
 
 def logout():
     if users.get_current_user():
@@ -50,12 +61,27 @@ def say_hello(username):
 def digest():
     sender_address = "Simple Blog <robert@syvarth.com>"
     subject = "Simple Blog - Daily Digest"
+
     body = """
 This is a digest email.
+<ul>
+"""
+    entries = EntryModel.query(EntryModel.timestamp > (datetime.datetime.now() + datetime.timedelta(days=-1))).order(-EntryModel.timestamp)
+    for entry in entries:
+        body = body + """
+    <li><a href="%s">%s</a></li>
+""" % ("http://simpleblog-1082.appspot.com/post/" + str(entry.key.id()), entry.title)
 
-%s
-""" % "Testing"
-    mail.send_mail(sender_address, "robert.syvarth@gmail.com", subject, body)
+    body = body + """
+</ul>
+
+That is all!
+"""
+
+    subs = EmailSubscriptionModel.query(EmailSubscriptionModel.subscribed == True)
+    for sub in subs:
+        mail.send_mail(sender_address, sub.user.email(), subject, body)
+
     return ""
 
 

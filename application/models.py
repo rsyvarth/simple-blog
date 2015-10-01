@@ -16,3 +16,11 @@ class EntryModel(ndb.Model):
     added_by = ndb.UserProperty()
     timestamp = ndb.DateTimeProperty(auto_now_add=True)
     updated = ndb.DateTimeProperty(auto_now=True)
+
+
+class EmailSubscriptionModel(ndb.Model):
+    """Email Subscription Model"""
+    user = ndb.UserProperty()
+    subscribed = ndb.BooleanProperty(default=True)
+    timestamp = ndb.DateTimeProperty(auto_now_add=True)
+    updated = ndb.DateTimeProperty(auto_now=True)
