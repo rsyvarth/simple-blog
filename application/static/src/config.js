@@ -1,5 +1,10 @@
 'use strict';
 
-var config = {
-  key: 'val'
+window.config = {
+  key: 'val',
+  baseUrl: ''
 };
+
+if(window.location.hostname === 'localhost') {
+    config.baseUrl = 'http://localhost:8080/';
+}

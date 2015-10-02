@@ -7,7 +7,13 @@ var app = angular.module('app', [
 
   'storyList',
   'story.StoryModel',
-  'hackerNews.hackerNewsService',
+  'story.StoryService',
+
+  'loginButton',
+  'user.UserModel',
+  'user.UserService',
+
+  'createForm',
 
   'ui.router',
   'pascalprecht.translate',

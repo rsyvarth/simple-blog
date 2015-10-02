@@ -11,10 +11,14 @@ app.config(function($stateProvider, $urlRouterProvider) {
       url: '/about',
       templateUrl: 'partials/about/about.html'
     })
+    .state('create', {
+      url: '/create',
+      templateUrl: 'partials/create/create.html'
+    })
     .state('home', {
       url: '/:page',
       params: {
-        page: {value: '1', squash: true}
+        page: {value: '', squash: true}
       },
       templateUrl: 'partials/home/home.html',
       controller: HomeController

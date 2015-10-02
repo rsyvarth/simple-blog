@@ -5,7 +5,10 @@ URL dispatch route mappings and error handlers
 
 """
 
+from google.appengine.datastore.datastore_query import Cursor
+
 from flask import render_template
+from flask.ext.cors import CORS
 
 from google.appengine.api import users
 from google.appengine.runtime.apiproxy_errors import CapabilityDisabledError
@@ -13,10 +16,14 @@ from google.appengine.runtime.apiproxy_errors import CapabilityDisabledError
 from application import app
 from application import views
 
-from models import ExampleModel
+from models import EntryModel
+from decorators import login_required, admin_required
+
+import logging
 
 from flask_restful import reqparse, abort, Api, Resource
 api = Api(app)
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:1234"}})
 
 ## URL dispatch rules
 # App Engine warm up handler
@@ -25,123 +32,155 @@ app.add_url_rule('/api/_ah/warmup', 'warmup', view_func=views.warmup)
 
 # Login page
 app.add_url_rule('/login', 'login', view_func=views.login)
+app.add_url_rule('/logout', 'logout', view_func=views.logout)
 
-# Home page
-app.add_url_rule('/api/', 'home', view_func=views.home)
-
-# Test page
-app.add_url_rule('/api/test', 'test', view_func=views.test)
+# Run daily email digest
+app.add_url_rule('/digest', 'digest', view_func=views.digest)
 
 
-TODOS = {
-    'todo1': {'id': 1, 'title': 'build an API'},
-    'todo2': {'id': 2, 'title': '?????'},
-    'todo3': {'id': 3, 'title': 'profit!'},
-}
+# Entry
+# shows a single entry item and lets you delete a entry item
+class Entry(Resource):
+    def get(self, entry_id):
+        entry = EntryModel.get_by_id(int(entry_id))
+        if entry is None:
+            return {'status' : 404, 'message' : 'entry not found'}, 404
 
+        return Entry.format(entry), 200
 
-def abort_if_todo_doesnt_exist(todo_id):
-    if todo_id not in TODOS:
-        abort(404, message="Todo {} doesn't exist".format(todo_id))
-
-parser = reqparse.RequestParser()
-parser.add_argument('title')
-parser.add_argument('description')
-
-def formatExample(example):
-    return {
-        'id': example.key.id(),
-        'title': example.example_name,
-        'description': example.example_description,
-        'added_by': {
-            'email': example.added_by.email(),
-            'user_id': example.added_by.user_id()
-        },
-        'timestamp': example.timestamp.isoformat()
-    }
-
-
-# Todo
-# shows a single todo item and lets you delete a todo item
-class Todo(Resource):
-    def get(self, todo_id):
-        abort_if_todo_doesnt_exist(todo_id)
-        return TODOS[todo_id]
-
-    def delete(self, todo_id):
-        abort_if_todo_doesnt_exist(todo_id)
-        del TODOS[todo_id]
+    def delete(self, entry_id):
+        logging.info("test")
+        entry = EntryModel.get_by_id(int(entry_id))
+        if entry is None:
+            return {'status' : 404, 'message' : 'entry not found'}, 404
+        entry.delete()
         return '', 204
 
-    def put(self, todo_id):
+    def put(self, entry_id):
+        parser = reqparse.RequestParser()
+        parser.add_argument('title')
+        parser.add_argument('description')
+
         args = parser.parse_args()
-        task = {'task': args['task']}
-        TODOS[todo_id] = task
-        return task, 201
+        entry = EntryModel.get_by_id(int(entry_id))
+        if entry is None:
+            return {'status' : 404, 'message' : 'entry not found'}, 404
 
+        entry.title = args['title']
+        entry.description = args['description']
 
-# TodoList
-# shows a list of all todos, and lets you POST to add new tasks
-class TodoList(Resource):
-    def get(self):
-        examples = ExampleModel.query()
-        out = []
-        for example in examples:
-            out.append(formatExample(example))
-        return out
-        # return examples.to_dict()
-
-    def post(self):
-        args = parser.parse_args()
-        example = ExampleModel(
-            example_name=args['title'],
-            example_description=args['description'],
-            added_by=users.get_current_user()
-        )
         try:
-            example.put()
-            # example_id = example.key.id()
-            return formatExample(example), 201
+            entry.put()
+            return Entry.format(entry), 201
+        except CapabilityDisabledError:
+            return {'status' : 500, 'message' : 'can\'t access database'}, 500
+
+    @staticmethod
+    def format(entry):
+        if entry is None or entry.timestamp is None:
+            return {}
+
+        return {
+            # 'id': entry.key.urlsafe(),
+            'id': entry.key.id(),
+            'title': entry.title,
+            'description': entry.description,
+            'added_by': UserSelf.format(entry.added_by),
+            'timestamp': entry.timestamp.isoformat(),
+            'updated': entry.updated.isoformat()
+        }
+
+api.add_resource(Entry, '/api/entries/<entry_id>')
+
+# EntryList
+# shows a list of all entries, and lets you POST to add new entry
+class EntryList(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('cursor')
+
+        args = parser.parse_args()
+        curs = Cursor(urlsafe=args['cursor'])
+
+        q = EntryModel.query()
+        q_forward = q.order(-EntryModel.timestamp)
+        q_reverse = q.order(EntryModel.timestamp)
+
+        entries, next_curs, more = q_forward.fetch_page(10, start_cursor=curs)
+
+
+        out = []
+        for entry in entries:
+            out.append(Entry.format(entry))
+
+        nextCurs = ""
+        if more:
+            nextCurs = next_curs.urlsafe()
+
+        prevCurs = ""
+        if next_curs is not None:
+            rev_cursor = next_curs.reversed()
+            old_entries, prev_cursor, fewer = q_reverse.fetch_page(10, start_cursor=rev_cursor, offset=len(out))
+            if prev_cursor is not None:
+                prevCurs = prev_cursor.urlsafe()
+
+        return {
+            'meta': {
+                'prev_curs': prevCurs,
+                'curs': curs.urlsafe(), 
+                'next_curs': nextCurs
+            },
+            'entries': out
+        }
+
+    @login_required
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('title')
+        parser.add_argument('description')
+
+        args = parser.parse_args()
+        entry = EntryModel(
+            title = args['title'],
+            description = args['description'],
+            added_by = users.get_current_user()
+        )
+
+        try:
+            entry.put()
+            return Entry.format(entry), 201
+
         except CapabilityDisabledError:
             return {'status' : 500, 'message' : 'can\'t access database'}, 500
 
 ##
 ## Actually setup the Api resource routing here
 ##
-api.add_resource(TodoList, '/api/todos')
-api.add_resource(Todo, '/api/todos/<todo_id>')
+api.add_resource(EntryList, '/api/entries')
 
 
 
+# UserSelf
+# gets information about the current user
+class UserSelf(Resource):
+    def get(self):
+           return self.format(users.get_current_user())
 
 
-# # Say hello
-# app.add_url_rule('/api/hello/<username>', 'say_hello', view_func=views.say_hello)
+    @staticmethod
+    def format(user):
+        if user is None:
+            return {}
 
-# # Examples list page
-# app.add_url_rule('/api/examples', 'list_examples', view_func=views.list_examples, methods=['GET', 'POST'])
-
-# # Examples list page (cached)
-# app.add_url_rule('/api/examples/cached', 'cached_examples', view_func=views.cached_examples, methods=['GET'])
-
-# # Contrived admin-only view example
-# app.add_url_rule('/api/admin_only', 'admin_only', view_func=views.admin_only)
-
-# # Edit an example
-# app.add_url_rule('/api/examples/<int:example_id>/edit', 'edit_example', view_func=views.edit_example, methods=['GET', 'POST'])
-
-# # Delete an example
-# app.add_url_rule('/api/examples/<int:example_id>/delete', view_func=views.delete_example, methods=['POST'])
+        return {
+            # 'email': user.email(),
+            'username': user.nickname(),
+            'user_id': user.user_id()
+        }
 
 
-## Error handlers
-# Handle 404 errors
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
-
-# Handle 500 errors
-@app.errorhandler(500)
-def server_error(e):
-    return render_template('500.html'), 500
+##
+## Actually setup the Api resource routing here
+##
+api.add_resource(UserSelf, '/api/users/self')
 

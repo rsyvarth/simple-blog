@@ -1,0 +1,4 @@
+cron:
+- description: dailyDigest
+  url: /digest
+  schedule: every day 10:00

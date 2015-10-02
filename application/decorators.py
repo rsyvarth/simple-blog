@@ -15,7 +15,7 @@ def login_required(func):
     @wraps(func)
     def decorated_view(*args, **kwargs):
         if not users.get_current_user():
-            abort(401)  # Unauthorized
+            return {'status' : 401, 'message' : 'must be signed in to access this endpoint'}, 401
         return func(*args, **kwargs)
     return decorated_view
 
@@ -24,9 +24,7 @@ def admin_required(func):
     """Requires App Engine admin credentials"""
     @wraps(func)
     def decorated_view(*args, **kwargs):
-        if users.get_current_user():
-            if not users.is_current_user_admin():
-                abort(401)  # Unauthorized
-            return func(*args, **kwargs)
-        return redirect(users.create_login_url(request.url))
+        if not users.get_current_user() or not users.is_current_user_admin():
+            return {'status' : 401, 'message' : 'no permission'}, 401
+        return func(*args, **kwargs)
     return decorated_view
