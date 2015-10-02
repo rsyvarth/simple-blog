@@ -30,7 +30,30 @@ var UserService = Class.extend({
     });
 
     return deferred.promise;
+  },
+
+    /*
+     *update my status as a user
+     */
+  updateSelf: function(data) {
+    var deferred = this.$q.defer();
+
+    this.$http({
+      method: 'PUT',
+      data: data,
+      url: this.baseUrl + '/users/self'
+    }).then(function(data) {
+      deferred.resolve(data.data);
+    }, function(err) {
+      console.error(err); //TODO: real error handling
+      deferred.reject(err);
+    });
+
+    return deferred.promise;
   }
+
+
+
 
 });
 

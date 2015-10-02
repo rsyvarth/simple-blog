@@ -103,8 +103,8 @@ gulp.task('js', function () {
             'src/lang/en/lang.js', //Include our lang strings
             'src/**/*.*js'])
         .pipe(plumber())
-        // .pipe(jshint())
-        // .pipe(jshint.reporter('jshint-stylish'))
+         .pipe(jshint())
+         .pipe(jshint.reporter('jshint-stylish'))
         // .pipe(jscs())
         .pipe(sourcemaps.init())
         .pipe(concat('app.js'))

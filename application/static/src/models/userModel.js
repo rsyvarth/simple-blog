@@ -43,6 +43,23 @@ var UserModel = Class.extend({
     return deferred.promise;
   },
 
+  /*
+   *subscribe to our blog
+   */
+  subscribe: function(isSubscribed) {
+    var deferred = this.$q.defer();
+
+    this.userService.updateSelf({subscribed: isSubscribed}).then(function(data) {
+      this.user = data;
+
+      this.events.notify(models.events.USER_LOADED);
+      deferred.resolve(this.user);
+
+    }.bind(this));
+
+    return deferred.promise;
+  },
+
   /**
    * Get the list of user
    */

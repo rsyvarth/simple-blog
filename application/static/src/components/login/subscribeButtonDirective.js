@@ -53,11 +53,11 @@ var subscribeButtonDirective = BaseDirective.extend({
   },
 
   subscribe: function() {
-    window.location = config.baseUrl + 'subscribe';
+    this.userModel.subscribe(true);
   },
 
   unsubscribe: function() {
-    window.location = config.baseUrl + 'unsubscribe';
+    this.userModel.subscribe(false);
   }
 
 });
