@@ -10,6 +10,7 @@ var app = angular.module('app', [
   'story.StoryService',
 
   'loginButton',
+  'subscribeButton',
   'user.UserModel',
   'user.UserService',
 

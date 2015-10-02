@@ -7,7 +7,9 @@ var translations = {
     ABOUT: 'About',
     CREATE: 'Create',
     LOGIN: 'Login',
-    LOGOUT: 'Logout'
+    LOGOUT: 'Logout',
+    SUBSCRIBE: 'Subscribe',
+    UNSUBSCRIBE: 'Unsubscribe'
   },
   FOOT: {
     TITLE: 'Simple Blog',
