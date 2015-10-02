@@ -8,7 +8,8 @@
 @import 'storyList/storyList';
 
 body {
-  background-color: #424242;
+  background: #424242 url('/images/background.jpg') no-repeat 50% 50%;
+  background-size: cover;
   font-family: 'Roboto', 'Helvetica', sans-serif;
 }
 
