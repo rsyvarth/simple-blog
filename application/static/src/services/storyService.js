@@ -38,6 +38,25 @@ var StoryService = Class.extend({
     return deferred.promise;
   },
 
+  /**
+   * Pull a list of the latest stories
+   */
+  getStory: function(id) {
+    var deferred = this.$q.defer();
+
+    this.$http({
+      method: 'GET',
+      url: this.baseUrl + '/entries/' + id
+    }).then(function(data) {
+      deferred.resolve(data.data);
+    }, function(err) {
+      console.error(err); //TODO: real error handling
+      deferred.reject(err);
+    });
+
+    return deferred.promise;
+  },
+
   add: function(data) {
     var deferred = this.$q.defer();
 

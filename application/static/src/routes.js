@@ -15,6 +15,11 @@ app.config(function($stateProvider, $urlRouterProvider) {
       url: '/create',
       templateUrl: 'partials/create/create.html'
     })
+    .state('view', {
+      url: '/post/:postId',
+      templateUrl: 'partials/view/view.html',
+      controller: ViewController
+    })
     .state('home', {
       url: '/:page',
       params: {

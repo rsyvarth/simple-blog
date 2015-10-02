@@ -5,6 +5,7 @@
  */
 namespace('models.events').ENTRIES_LOADED = 'StoryModel.ENTRIES_LOADED';
 namespace('models.events').ENTRY_CREATED = 'StoryModel.ENTRY_CREATED';
+namespace('models.events').ENTRY_LOADED = 'StoryModel.ENTRY_LOADED';
 
 /**
  * Story Model
@@ -50,10 +51,35 @@ var StoryModel = Class.extend({
   },
 
   /**
+   * Load the top stories filtered by read state
+   */
+  loadStory: function(id) {
+    var deferred = this.$q.defer();
+
+    this.storyService.getStory(id).then(function(data) {
+      data.timestamp = moment.utc(data.timestamp).unix();
+      this.story = data;
+
+      this.events.notify(models.events.ENTRY_LOADED);
+      deferred.resolve(this.story);
+
+    }.bind(this));
+
+    return deferred.promise;
+  },
+
+  /**
    * Get the list of stories
    */
   getStories: function() {
     return this.stories;
+  },
+
+  /**
+   * Get the list of stories
+   */
+  getStory: function() {
+    return this.story;
   },
 
   add: function(data) {
