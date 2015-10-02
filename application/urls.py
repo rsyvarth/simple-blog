@@ -16,7 +16,7 @@ from google.appengine.runtime.apiproxy_errors import CapabilityDisabledError
 from application import app
 from application import views
 
-from models import EntryModel
+from models import EntryModel, EmailSubscriptionModel
 from decorators import login_required, admin_required
 
 import logging
@@ -164,18 +164,20 @@ api.add_resource(EntryList, '/api/entries')
 # gets information about the current user
 class UserSelf(Resource):
     def get(self):
-           return self.format(users.get_current_user())
+        sub = EmailSubscriptionModel.query(EmailSubscriptionModel.user == users.get_current_user()).get()
+        return self.format(users.get_current_user(), sub)
 
 
     @staticmethod
-    def format(user):
+    def format(user, sub):
         if user is None:
             return {}
 
         return {
             # 'email': user.email(),
             'username': user.nickname(),
-            'user_id': user.user_id()
+            'user_id': user.user_id(),
+            'subscribed': sub.subscribed if sub is not None else False
         }
 
 
