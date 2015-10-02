@@ -70,6 +70,9 @@ def digest():
 This is a digest email.
 """
     entries = EntryModel.query(EntryModel.timestamp > (datetime.datetime.now() + datetime.timedelta(days=-1))).order(-EntryModel.timestamp)
+    if len(entries) == 0:
+        return ""
+
     for entry in entries:
         body = body + """
     %s
