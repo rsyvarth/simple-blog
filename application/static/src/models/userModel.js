@@ -29,10 +29,10 @@ var UserModel = Class.extend({
   /**
    * Load the top user filtered by read state
    */
-  loadSelf: function(cursor) {
+  loadSelf: function() {
     var deferred = this.$q.defer();
 
-    this.userService.getSelf(cursor).then(function(data) {
+    this.userService.getSelf().then(function(data) {
       this.user = data;
 
       this.events.notify(models.events.USER_LOADED);
