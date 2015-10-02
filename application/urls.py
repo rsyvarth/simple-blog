@@ -85,7 +85,7 @@ class Entry(Resource):
             'id': entry.key.id(),
             'title': entry.title,
             'description': entry.description,
-            'added_by': UserSelf.format(entry.added_by),
+            'added_by': UserSelf.format(entry.added_by, None),
             'timestamp': entry.timestamp.isoformat(),
             'updated': entry.updated.isoformat()
         }
@@ -167,6 +167,20 @@ class UserSelf(Resource):
         sub = EmailSubscriptionModel.query(EmailSubscriptionModel.user == users.get_current_user()).get()
         return self.format(users.get_current_user(), sub)
 
+    @login_required
+    def put(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('subscribed', type=bool)
+        args = parser.parse_args()
+
+        sub = EmailSubscriptionModel.query(EmailSubscriptionModel.user == users.get_current_user()).get()
+        sub.subscribed = args['subscribed']
+
+        try:
+            sub.put()
+            return self.format(users.get_current_user(), sub)
+        except CapabilityDisabledError:
+            return {'status' : 500, 'message' : 'can\'t access database'}, 500
 
     @staticmethod
     def format(user, sub):

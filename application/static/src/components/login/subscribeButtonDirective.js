@@ -50,6 +50,7 @@ var subscribeButtonDirective = BaseDirective.extend({
   userLoaded: function() {
     var data = this.userModel.getSelf();
     this.$scope.user = data;
+    console.log("user loader called", data)
   },
 
   subscribe: function() {

@@ -35,7 +35,7 @@ def login():
         return redirect(users.create_login_url(request.url))
 
     sub = EmailSubscriptionModel.query(EmailSubscriptionModel.user == users.get_current_user()).get()
-    if sub is not None
+    if sub is not None:
         return redirect("");
 
     subscription = EmailSubscriptionModel(
